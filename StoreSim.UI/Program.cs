@@ -53,6 +53,23 @@ namespace StoreSim.UI
                         if(int.TryParse(input, out var storeNum) && storeNum > 0 && storeNum <= storeLocations.Count)
                         {
                             Store store = storeLocations[storeNum-1];
+                            if(store.Orders.Count == 0)
+                            {
+                                Console.WriteLine("No order history");
+                            }
+                            while(store.Orders.Count > 0)
+                            {
+                                for(var i=1; i<=store.Orders.Count; i++)
+                                {
+                                    var order = store.Orders[i-1];
+                                    var orderString = $"{i}: {order.Time}";
+                                    Console.WriteLine(orderString);
+                                }
+                                Console.WriteLine();
+                                Console.WriteLine("Select order for details or enter \"b\" to go back");
+                                input = Console.ReadLine();
+                                break;
+                            }
                         }
                         break;
                     }

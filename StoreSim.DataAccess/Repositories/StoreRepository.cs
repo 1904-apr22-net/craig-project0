@@ -20,7 +20,8 @@ namespace StoreSim.DataAccess.Repositories
         {
             IQueryable<Entities.Location> items = _dbContext.Location
                 .Include(i => i.InventoryItem)
-                .Include(c => c.Customer);
+                .Include(c => c.Customer)
+                .Include(o => o.Order);
             if(search != null)
             {
                 //  do some search 
