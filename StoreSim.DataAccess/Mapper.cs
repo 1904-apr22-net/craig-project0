@@ -57,5 +57,17 @@ namespace StoreSim.DataAccess
 
         public static IEnumerable<Library.Models.Store> Map(IEnumerable<Entities.Location> storeLocations) =>
             storeLocations.Select(Map);
+
+        public static IEnumerable<Library.Models.Order> Map(IEnumerable<Entities.Order> orders) =>
+            orders.Select(Map);
+
+        public static IEnumerable<Library.Models.Customer> Map(IEnumerable<Entities.Customer> customers) =>
+            customers.Select(Map);
+
+        public static IEnumerable<Library.Models.Product> Map(IEnumerable<Entities.InventoryItem> inventory) =>
+            inventory.Select(Map);
+
+        public static IEnumerable<Library.Models.Product> Map(IEnumerable<Entities.OrderItem> orderItems) =>
+            orderItems.Select(Map);
     }
 }
