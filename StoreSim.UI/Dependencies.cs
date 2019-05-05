@@ -21,8 +21,5 @@ namespace StoreSim.UI
 
             return new StoreRepository(dbContext);
         }
-
-        public static XmlSerializer CreateXmlSerializer() =>
-            new XmlSerializer(typeof(List<Library.Models.Store>));
     }
 }

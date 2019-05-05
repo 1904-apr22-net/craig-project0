@@ -14,39 +14,50 @@ namespace StoreSim.UI
     {
         static void Main(string[] args)
         {
-            XmlSerializer serializer = Dependencies.CreateXmlSerializer();
-
             using(IStoreRepository storeRepository = Dependencies.CreateStoreRepository())
             {
-                RunUi(storeRepository, serializer);
+                RunUi(storeRepository);
             }
         }
 
-        public static void RunUi(IStoreRepository storeRepository, XmlSerializer serializer)
+        public static void RunUi(IStoreRepository storeRepository)
         {
-            bool finished = false;
-
             Console.Clear();
-            Console.WriteLine("\nCraigo's Order Placement Application!\n");
+            Console.WriteLine("Craigo's Skateshop\n");
 
-            while(!finished)
+            while(true)
             {
-                Console.WriteLine("Please select from the menu below, or enter 'q' to quit.\n");
-                Console.WriteLine("a. Place and order");
-                Console.WriteLine("b. Search a customer");
-                Console.WriteLine("c. Search a store location");
-
-                var choice = (char)Console.Read();
-
-                switch(choice)
+                Console.WriteLine("Select from the menu below or press \"q\" to quit\n");
+                Console.WriteLine("c:\tSelect a customer");
+                Console.WriteLine("s:\tSelect a store location");
+                var input = Console.ReadLine();
+                if(input == "s")
                 {
-                    case 'a': Console.WriteLine("Nothing yet"); break;
-                    case 'b': Console.WriteLine("Nothing yet"); break;
-                    case 'c': Console.WriteLine("Nothing yet"); break;
-                    case 'q': finished = true; break;
-                    default : Console.WriteLine("\nError: Invalid input\n"); break;
+                    var storeLocations = storeRepository.GetStores().ToList();
+                    Console.WriteLine();
+                    if(storeLocations.Count == 0)
+                    {
+                        Console.WriteLine("No stores");
+                    }
+                    while(storeLocations.Count > 0)
+                    {
+                        for(var i=1; i<=storeLocations.Count; i++)
+                        {
+                            Store store = storeLocations[i-1];
+                            var storeString = $"{i}: {store.Address}, {store.City}, {store.State}, {store.Country}";
+                            Console.WriteLine(storeString);
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Select a store to see order history or enter \"b\" to go back");
+                        input = Console.ReadLine();
+                        if(int.TryParse(input, out var storeNum) && storeNum > 0 && storeNum <= storeLocations.Count)
+                        {
+                            Store store = storeLocations[storeNum-1];
+                        }
+                        break;
+                    }
                 }
-                Console.ReadLine();
+                break;
             }
         }
     }

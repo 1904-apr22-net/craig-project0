@@ -42,6 +42,14 @@ namespace StoreSim.DataAccess.Entities
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.LocationId).HasColumnName("LocationID");
 
                 entity.Property(e => e.State)

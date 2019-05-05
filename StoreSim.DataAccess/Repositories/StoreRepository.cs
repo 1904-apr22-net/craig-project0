@@ -15,6 +15,7 @@ namespace StoreSim.DataAccess.Repositories
         public StoreRepository(SkateShopDbContext dbContext) =>
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
+        
         public IEnumerable<Library.Models.Store> GetStores(string search)
         {
             IQueryable<Entities.Location> items = _dbContext.Location
