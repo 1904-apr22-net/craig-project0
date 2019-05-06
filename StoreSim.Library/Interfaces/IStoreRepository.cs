@@ -7,5 +7,11 @@ namespace StoreSim.Library.Interfaces
     public interface IStoreRepository : IDisposable
     {
         IEnumerable<Store> GetStores(string search = null);
+        Customer GetCustomerById(int id);
+        IEnumerable<Order> SortOrderHistoryByCheapest(int id);
+        IEnumerable<Order> SortOrderHistoryByMostExpensive(int id);
+        IEnumerable<Order> SortOrderHistoryByEarliest(int id);
+        IEnumerable<Order> SortOrderHistoryByLatest(int id);
+
     }
 }

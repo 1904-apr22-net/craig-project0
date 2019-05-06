@@ -30,6 +30,7 @@ namespace StoreSim.UI
                 Console.WriteLine("Select from the menu below or press \"q\" to quit\n");
                 Console.WriteLine("c:\tSelect a customer");
                 Console.WriteLine("s:\tSelect a store location");
+                Console.WriteLine("n:\tNew Customer");
                 var input = Console.ReadLine();
                 if(input == "s")
                 {
@@ -50,6 +51,7 @@ namespace StoreSim.UI
                         Console.WriteLine();
                         Console.WriteLine("Select a store to see order history or enter \"b\" to go back");
                         input = Console.ReadLine();
+                        Console.WriteLine();
                         if(int.TryParse(input, out var storeNum) && storeNum > 0 && storeNum <= storeLocations.Count)
                         {
                             Store store = storeLocations[storeNum-1];
@@ -57,24 +59,69 @@ namespace StoreSim.UI
                             {
                                 Console.WriteLine("No order history");
                             }
-                            while(store.Orders.Count > 0)
+                            var sort = "cheapest";
+                            var sortedOrders = storeRepository.SortOrderHistoryByCheapest(store.Id).ToList();
+                            while(sortedOrders.Count > 0)
                             {
-                                for(var i=1; i<=store.Orders.Count; i++)
+                                Console.WriteLine($"Sorting by {sort}:");
+                                for(var i=1; i<=sortedOrders.Count; i++)
                                 {
-                                    var order = store.Orders[i-1];
-                                    var orderString = $"{i}: {order.Time}";
+                                    var order = sortedOrders[i-1];
+                                    var orderString = $"{order.Id}: {order.Time}";
                                     Console.WriteLine(orderString);
                                 }
                                 Console.WriteLine();
-                                Console.WriteLine("Select order for details or enter \"b\" to go back");
+                                Console.WriteLine("Select order ID for details or enter \"b\" to go back");
+                                Console.WriteLine("To sort order history, select \"c\" (cheapest), \"m\" (most expensive), \"e\" (earliest), or \"l\" (latest)");
                                 input = Console.ReadLine();
-                                break;
+                                Console.WriteLine();
+                                if(int.TryParse(input, out var orderNum) && orderNum > 0 && orderNum <= store.Orders.Count)
+                                {
+                                    var orderDetail = store.Orders[orderNum-1];
+                                    var customer = storeRepository.GetCustomerById(orderDetail.Id);
+                                    Console.WriteLine($"OrderId: {orderDetail.Id}");
+                                    Console.WriteLine($"Customer: {customer.FirstName} {customer.LastName}");
+                                    Console.WriteLine($"Store Location: {store.Address}, {store.City}, {store.State}, {store.Country}");
+                                    Console.WriteLine($"Number of Items: {orderDetail.Quantity}");
+                                    Console.WriteLine($"Time of Order: {orderDetail.Time}");
+                                    Console.WriteLine($"Total Price: {orderDetail.Total}");
+                                    Console.WriteLine();
+                                    Console.WriteLine("Press any key to go back");
+                                    Console.ReadLine();
+                                }
+                                else if(input == "c")
+                                {
+                                    sort = "cheapest";
+                                    storeRepository.SortOrderHistoryByCheapest(store.Id);
+                                }
+                                else if(input == "m")
+                                {
+                                    sort = "most expensive";
+                                    storeRepository.SortOrderHistoryByMostExpensive(store.Id);
+                                }
+                                else if(input == "e")
+                                {
+                                    sort = "earliest";
+                                    storeRepository.SortOrderHistoryByEarliest(store.Id);
+                                }
+                                else if(input == "l")
+                                {
+                                    sort = "latest";
+                                    storeRepository.SortOrderHistoryByLatest(store.Id);
+                                }
+                                else if(input == "b")
+                                {
+                                    break;
+                                }
                             }
                         }
+                    }
+                    if(input == 'q')
+                    {
                         break;
                     }
                 }
-                break;
+                
             }
         }
     }

@@ -20,14 +20,33 @@ namespace StoreSim.DataAccess.Repositories
         {
             IQueryable<Entities.Location> items = _dbContext.Location
                 .Include(i => i.InventoryItem)
+                    .ThenInclude(p => p.Product)
+                .Include(o => o.Order)
+                    .ThenInclude(oi => oi.OrderItem)
+                        .ThenInclude(p => p.Product)
                 .Include(c => c.Customer)
-                .Include(o => o.Order);
+                    .ThenInclude(o => o.Order)
+                        .ThenInclude(oi => oi.OrderItem)
+                            .ThenInclude(p => p.Product);
             if(search != null)
             {
                 //  do some search 
             }
             return Mapper.Map(items);
         }
+
+        public Library.Models.Customer GetCustomerById(int id) =>
+            Mapper.Map(_dbContext.Customer.Find(id));
+
+        public IEnumerable<Library.Models.Order> SortOrderHistoryByCheapest(int id) =>
+            Mapper.Map(_dbContext.Location.Find(id).Order.OrderBy(t => t.Total)).ToList();
+        public IEnumerable<Library.Models.Order> SortOrderHistoryByMostExpensive(int id) =>
+            Mapper.Map(_dbContext.Location.Find(id).Order.OrderByDescending(t => t.Total));
+        public IEnumerable<Library.Models.Order> SortOrderHistoryByEarliest(int id) =>
+            Mapper.Map(_dbContext.Location.Find(id).Order.OrderBy(t => t.Time));
+        public IEnumerable<Library.Models.Order> SortOrderHistoryByLatest(int id) =>
+            Mapper.Map(_dbContext.Location.Find(id).Order.OrderByDescending(t => t.Time));
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
