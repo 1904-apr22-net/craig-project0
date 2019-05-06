@@ -39,6 +39,8 @@ namespace StoreSim.DataAccess.Repositories
             return Mapper.Map(items);
         }
 
+        public Library.Models.Store GetStoreById(int id) =>
+            Mapper.Map(_dbContext.Location.Find(id));
         public Library.Models.Customer GetCustomerById(int id) =>
             Mapper.Map(_dbContext.Customer.Find(id));
 
@@ -52,7 +54,13 @@ namespace StoreSim.DataAccess.Repositories
         public IEnumerable<Library.Models.Order> SortOrderHistoryByLatest(int id) =>
             Mapper.Map(_dbContext.Location.Find(id).Order.OrderByDescending(t => t.Time));
 
+        public IEnumerable<Library.Models.Order> GetCustomerOrderHistory(int id) =>
+            Mapper.Map(_dbContext.Customer.Find(id).Order);
 
+        public void Save()
+        {
+            _dbContext.SaveChanges();
+        }
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

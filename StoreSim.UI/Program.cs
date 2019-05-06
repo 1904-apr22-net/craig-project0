@@ -52,6 +52,10 @@ namespace StoreSim.UI
                         Console.WriteLine("Select a store to see order history or enter \"b\" to go back");
                         input = Console.ReadLine();
                         Console.WriteLine();
+                        if(input == "b")
+                        {
+                            break;
+                        }
                         if(int.TryParse(input, out var storeNum) && storeNum > 0 && storeNum <= storeLocations.Count)
                         {
                             Store store = storeLocations[storeNum-1];
@@ -86,7 +90,7 @@ namespace StoreSim.UI
                                     Console.WriteLine($"Time of Order: {orderDetail.Time}");
                                     Console.WriteLine($"Total Price: {orderDetail.Total}");
                                     Console.WriteLine();
-                                    Console.WriteLine("Press any key to go back");
+                                    Console.WriteLine("Press enter key to go back");
                                     Console.ReadLine();
                                 }
                                 else if(input == "c")
@@ -113,6 +117,12 @@ namespace StoreSim.UI
                                 {
                                     break;
                                 }
+                                else
+                                {
+                                    Console.WriteLine();
+                                    Console.WriteLine("Invalid Input");
+                                    Console.WriteLine();
+                                }
                             }
                         }
                         
@@ -124,8 +134,12 @@ namespace StoreSim.UI
                     while(true)
                     {
                         Console.WriteLine();
-                        Console.Write("Enter the name of the customer: ");
+                        Console.Write("Enter the name of the customer or \"b\" to go back: ");
                         input = Console.ReadLine();
+                        if(input == "b")
+                        {
+                            break;
+                        }
                         var space = input.IndexOf(" ");
                         var firstName = input.Substring(0, space);
                         var lastName = input.Substring(space+1);
@@ -134,20 +148,62 @@ namespace StoreSim.UI
                         {
                             if(customers[i].FirstName == firstName && customers[i].LastName == lastName)
                             {
-                                var customer = customers[i];
-                                while(true)
+                                index = i;
+                            }
+                        }
+                        if(index > 0)
+                        {
+                            var customer = customers[index];
+                            while(true)
+                            {
+                                Console.WriteLine($"Customer ID: {customer.Id}");
+                                Console.WriteLine($"First Name: {customer.FirstName}");
+                                Console.WriteLine($"Last Name: {customer.LastName}");
+                                Console.WriteLine($"Address: {customer.Address}");
+                                Console.WriteLine($"City: {customer.City}");
+                                Console.WriteLine($"State: {customer.State}");
+                                Console.WriteLine($"Country: {customer.Country}");
+                                Console.WriteLine();
+                                Console.Write("Select \"h\" to view history, \"p\" to place and order, or \"b\" to go back");
+                                input = Console.ReadLine();
+                                if(input == "b")
                                 {
-                                    Console.WriteLine($"{customer.FirstName} {customer.LastName} has ID {customer.Id}");
+                                    break;
+                                }
+                                else if(input == "p")
+                                {
+                                    
+                                }
+                                else if(input == "h")
+                                {
+                                    var orderHistory = storeRepository.GetCustomerOrderHistory(customer.Id).ToList();
+                                    while(true)
+                                    {
+                                        for(var i=1; i<=orderHistory.Count; i++)
+                                        {
+                                            Console.WriteLine($"{orderHistory[i-1].Id}: {orderHistory[i-1].Time}");
+                                        }
+                                        Console.WriteLine();
+                                        Console.WriteLine("Select an order to see details, or \"b\" to go back");
+                                        input = Console.ReadLine();
+                                        if(input == "b")
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
                                     Console.WriteLine();
-                                    Console.Write("Would you like to place an order?(y/n): ");
-                                    input = Console.ReadLine();
+                                    Console.WriteLine("Invalid Input");
+                                    Console.WriteLine();
                                 }
                             }
                         }
-                        if(index < 0)
+                        else
                         {
-                            Console.WriteLine("No customers by that name");
                             Console.WriteLine();
+                            Console.WriteLine("Invalid Input");
                         }
                     }
                 }
