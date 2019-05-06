@@ -28,7 +28,7 @@ namespace StoreSim.UI
             while(true)
             {
                 Console.WriteLine("Select from the menu below or press \"q\" to quit\n");
-                Console.WriteLine("c:\tSelect a customer");
+                Console.WriteLine("c:\tSearch a customer");
                 Console.WriteLine("s:\tSelect a store location");
                 Console.WriteLine("n:\tNew Customer");
                 var input = Console.ReadLine();
@@ -115,13 +115,46 @@ namespace StoreSim.UI
                                 }
                             }
                         }
-                    }
-                    if(input == 'q')
-                    {
-                        break;
+                        
                     }
                 }
-                
+                else if(input == "c")
+                {
+                    var customers = storeRepository.GetCustomers().ToList();
+                    while(true)
+                    {
+                        Console.WriteLine();
+                        Console.Write("Enter the name of the customer: ");
+                        input = Console.ReadLine();
+                        var space = input.IndexOf(" ");
+                        var firstName = input.Substring(0, space);
+                        var lastName = input.Substring(space+1);
+                        var index = -1;
+                        for(int i=0; i<customers.Count; i++)
+                        {
+                            if(customers[i].FirstName == firstName && customers[i].LastName == lastName)
+                            {
+                                var customer = customers[i];
+                                while(true)
+                                {
+                                    Console.WriteLine($"{customer.FirstName} {customer.LastName} has ID {customer.Id}");
+                                    Console.WriteLine();
+                                    Console.Write("Would you like to place an order?(y/n): ");
+                                    input = Console.ReadLine();
+                                }
+                            }
+                        }
+                        if(index < 0)
+                        {
+                            Console.WriteLine("No customers by that name");
+                            Console.WriteLine();
+                        }
+                    }
+                }
+                else if(input == "q")
+                {
+                    break;
+                }
             }
         }
     }

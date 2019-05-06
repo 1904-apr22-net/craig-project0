@@ -16,7 +16,7 @@ namespace StoreSim.DataAccess.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         
-        public IEnumerable<Library.Models.Store> GetStores(string search)
+        public IEnumerable<Library.Models.Store> GetStores()
         {
             IQueryable<Entities.Location> items = _dbContext.Location
                 .Include(i => i.InventoryItem)
@@ -28,15 +28,20 @@ namespace StoreSim.DataAccess.Repositories
                     .ThenInclude(o => o.Order)
                         .ThenInclude(oi => oi.OrderItem)
                             .ThenInclude(p => p.Product);
-            if(search != null)
-            {
-                //  do some search 
-            }
+            return Mapper.Map(items);
+        }
+        public IEnumerable<Library.Models.Customer> GetCustomers()
+        {
+            IQueryable<Entities.Customer> items = _dbContext.Customer
+                .Include(o => o.Order)
+                    .ThenInclude(oi => oi.OrderItem)
+                        .ThenInclude(p => p.Product);
             return Mapper.Map(items);
         }
 
         public Library.Models.Customer GetCustomerById(int id) =>
             Mapper.Map(_dbContext.Customer.Find(id));
+
 
         public IEnumerable<Library.Models.Order> SortOrderHistoryByCheapest(int id) =>
             Mapper.Map(_dbContext.Location.Find(id).Order.OrderBy(t => t.Total)).ToList();
