@@ -14,6 +14,6 @@ namespace StoreSim.Library.Models
 
         public List<Order> Orders{ get; set; } = new List<Order>();
         public List<Customer> Customers{ get; set; } = new List<Customer>();
-        public List<Product> Inventory{ get; set; } = new List<Product>();
+        public List<InventoryItem> Inventory{ get; set; } = new List<InventoryItem>();
     }
 }

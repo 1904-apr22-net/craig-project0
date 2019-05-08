@@ -38,11 +38,20 @@ namespace StoreSim.DataAccess.Repositories
                         .ThenInclude(p => p.Product);
             return Mapper.Map(items);
         }
+        public IEnumerable<Library.Models.Product> GetProducts()
+        {
+            IQueryable<Entities.Product> items = _dbContext.Product
+                .Include(i => i.InventoryItem)
+                .Include(o => o.OrderItem);
+            return Mapper.Map(items);
+        }
 
         public Library.Models.Store GetStoreById(int id) =>
             Mapper.Map(_dbContext.Location.Find(id));
         public Library.Models.Customer GetCustomerById(int id) =>
             Mapper.Map(_dbContext.Customer.Find(id));
+        public Library.Models.Order GetOrderById(int id) =>
+            Mapper.Map(_dbContext.Order.Find(id));
 
 
         public IEnumerable<Library.Models.Order> SortOrderHistoryByCheapest(int id) =>
@@ -56,6 +65,34 @@ namespace StoreSim.DataAccess.Repositories
 
         public IEnumerable<Library.Models.Order> GetCustomerOrderHistory(int id) =>
             Mapper.Map(_dbContext.Customer.Find(id).Order);
+
+        public void PlaceOrder(Library.Models.Order order, List<Library.Models.Product> cart)
+        {
+            Entities.Order newOrder = Mapper.Map(order);
+            _dbContext.Add(newOrder);
+            var latestOrder = _dbContext.Order.OrderByDescending(id => id.OrderId).First();
+            for(var i=0; i<cart.Count; i++)
+            {
+                Entities.OrderItem newOI = new Entities.OrderItem();
+                newOI.ProductId = cart[i].Id;
+                newOI.OrderId = latestOrder.OrderId;
+                _dbContext.OrderItem.Add(newOI);
+            }
+
+            //UpdateInventory(order.LocationId, cart);
+            Save();
+        }
+
+        /* private void UpdateInventory(int locationId, List<Product> cart)
+        {
+            for(var i=0; i<cart.Count; i++)
+            {
+                if(cart[i].ProductId == 7)
+                {
+                    IEnumerable<InventoryItem> allInventory = _dbContext.InventoryItem
+                }
+            }
+        }*/
 
         public void Save()
         {

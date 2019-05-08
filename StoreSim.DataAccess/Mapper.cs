@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StoreSim;
 
 namespace StoreSim.DataAccess
 {
@@ -29,14 +30,32 @@ namespace StoreSim.DataAccess
             Products = Map(order.OrderItem).ToList()
         };
 
+        public static Entities.Order Map(Library.Models.Order order) => new Entities.Order
+        {
+            OrderId = order.Id,
+            CustomerId = order.CustomerId,
+            LocationId = order.LocationId,
+            Time = order.Time,
+            Quantity = order.Quantity,
+            Total = order.Total,
+        };
+
         public static Library.Models.Product Map(Entities.OrderItem orderItem) =>
             Map(orderItem.Product);
+
 
         public static Library.Models.Product Map(Entities.Product product) => new Library.Models.Product
         {
             Id = product.ProductId,
             Name = product.Name,
             Price = (double)product.Price
+        };
+
+        public static Entities.Product Map(Library.Models.Product product) => new Entities.Product
+        {
+            ProductId = product.Id,
+            Name = product.Name,
+            Price = (decimal)product.Price
         };
 
         public static Library.Models.Customer Map(Entities.Customer customer) => new Library.Models.Customer
@@ -52,8 +71,13 @@ namespace StoreSim.DataAccess
             Orders = Map(customer.Order).ToList()
         };
 
-        public static Library.Models.Product Map(Entities.InventoryItem inventoryItem) => 
-            Map(inventoryItem.Product);
+        public static Library.Models.InventoryItem Map(Entities.InventoryItem inventoryItem) => new Library.Models.InventoryItem
+        {
+            InventoryItemId = inventoryItem.InventoryItemId,
+            LocationId = inventoryItem.LocationId,
+            ProductId = inventoryItem.ProductId,
+            Quantity = inventoryItem.Quantity
+        };
 
         public static IEnumerable<Library.Models.Store> Map(IEnumerable<Entities.Location> storeLocations) =>
             storeLocations.Select(Map);
@@ -64,10 +88,14 @@ namespace StoreSim.DataAccess
         public static IEnumerable<Library.Models.Customer> Map(IEnumerable<Entities.Customer> customers) =>
             customers.Select(Map);
 
-        public static IEnumerable<Library.Models.Product> Map(IEnumerable<Entities.InventoryItem> inventory) =>
+        public static IEnumerable<Library.Models.InventoryItem> Map(IEnumerable<Entities.InventoryItem> inventory) =>
             inventory.Select(Map);
 
         public static IEnumerable<Library.Models.Product> Map(IEnumerable<Entities.OrderItem> orderItems) =>
             orderItems.Select(Map);
+
+        public static IEnumerable<Library.Models.Product> Map(IEnumerable<Entities.Product> products) =>
+            products.Select(Map);
+        
     }
 }

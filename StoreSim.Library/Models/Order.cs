@@ -14,5 +14,6 @@ namespace StoreSim.Library.Models
         public decimal Total{ get; set; }
 
         public List<Product> Products{ get; set; } = new List<Product>();
+
     }
 }
