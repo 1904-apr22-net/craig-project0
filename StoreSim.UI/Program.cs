@@ -177,7 +177,7 @@ namespace StoreSim.UI
                                     {
                                         for(var i=1; i<=orderHistory.Count; i++)
                                         {
-                                            Console.WriteLine($"{orderHistory[i-1].Id}: {orderHistory[i-1].Time}");
+                                            Console.WriteLine($"{i}: {orderHistory[i-1].Time}");
                                         }
                                         Console.WriteLine();
                                         Console.WriteLine("Select an order to see details, or \"b\" to go back");
@@ -185,6 +185,20 @@ namespace StoreSim.UI
                                         if(input == "b")
                                         {
                                             break;
+                                        }
+                                        else if(int.TryParse(input, out var orderNum) && orderNum > 0 && orderNum <= orderHistory.Count)
+                                        {
+                                            var orderDetail = orderHistory[orderNum-1];
+                                            var store = storeRepository.GetStoreById(orderDetail.LocationId);
+                                            Console.WriteLine($"OrderId: {orderDetail.Id}");
+                                            Console.WriteLine($"Customer: {customer.FirstName} {customer.LastName}");
+                                            Console.WriteLine($"Store Location: {store.Address}, {store.City}, {store.State}, {store.Country}");
+                                            Console.WriteLine($"Number of Items: {orderDetail.Quantity}");
+                                            Console.WriteLine($"Time of Order: {orderDetail.Time}");
+                                            Console.WriteLine($"Total Price: ${orderDetail.Total.ToString("0.##")}");
+                                            Console.WriteLine();
+                                            Console.WriteLine("Press enter key to go back");
+                                            Console.ReadLine();
                                         }
                                     }
                                 }
